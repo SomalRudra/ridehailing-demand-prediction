@@ -28,7 +28,7 @@ import java.util.*;
 public class RideHailingKafkaConsumer {
 
     public static void main(String[] args) throws InterruptedException {
-        // Set up Spark Streaming configuration
+        // Setting up Spark Streaming configuration
         SparkConf conf = new SparkConf().setAppName("RideHailingDemandPrediction").setMaster("local[*]");
         JavaStreamingContext streamingContext = new JavaStreamingContext(conf, Durations.seconds(10));
 
@@ -43,14 +43,14 @@ public class RideHailingKafkaConsumer {
 
         Collection<String> topics = Arrays.asList("ride_hailing");
 
-        // Create Kafka stream
+        // Creating Kafka stream
         JavaInputDStream<ConsumerRecord<String, String>> stream = KafkaUtils.createDirectStream(
                 streamingContext,
                 LocationStrategies.PreferConsistent(),
                 ConsumerStrategies.Subscribe(topics, kafkaParams)
         );
 
-        // Process the stream
+        // Processing the stream here
         JavaDStream<String> rideRequests = stream.map(ConsumerRecord::value);
         JavaDStream<String> demandCount = rideRequests
                 .mapToPair(request -> new Tuple2<>(request, 1))
@@ -59,25 +59,25 @@ public class RideHailingKafkaConsumer {
 
         demandCount.print();
 
-        // Save processed data to HBase
+        // Saving processed data to HBase
         demandCount.foreachRDD(rdd -> {
             rdd.foreachPartition(partition -> {
-                // Set up HBase configuration
+                // Setting up HBase configuration
                 Configuration config = HBaseConfiguration.create();
                 try (Connection connection = ConnectionFactory.createConnection(config)) {
                     Table table = connection.getTable(TableName.valueOf("ride_hailing_demand"));
 
-                    // Iterate over each record and insert it into HBase
+                    // Iterating over each record and insert it into HBase
                     partition.forEachRemaining(record -> {
                         String[] splitRecord = record.split(" - ");
                         String location = splitRecord[0].split(": ")[1];
                         String demandCountValue = splitRecord[1].split(": ")[1];
 
-                        // Prepare HBase 'Put' object
+                        // Preparing HBase 'Put' object
                         Put put = new Put(Bytes.toBytes(location)); // Row key is the location
                         put.addColumn(Bytes.toBytes("demand_data"), Bytes.toBytes("count"), Bytes.toBytes(demandCountValue));
 
-                        // Insert into HBase
+                        // Inserting into HBase
                         try {
                             table.put(put);
                         } catch (IOException e) {
@@ -89,7 +89,7 @@ public class RideHailingKafkaConsumer {
             });
         });
 
-        // Start streaming context
+        // Starting streaming context
         streamingContext.start();
         streamingContext.awaitTermination();
     }

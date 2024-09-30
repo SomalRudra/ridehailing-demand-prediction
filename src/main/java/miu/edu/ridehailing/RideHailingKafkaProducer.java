@@ -16,7 +16,7 @@ public class RideHailingKafkaProducer {
 
         Producer<String, String> producer = new KafkaProducer<String,String>(props);
 
-        // Simulate ride-hailing data
+        // Simulating ride-hailing data
         String[] locations = {"downtown", "airport", "suburb", "station"};
         for (int i = 0; i < 10; i++) {
             String location = locations[i % locations.length];

@@ -17,19 +17,19 @@ import java.util.List;
 public class RideHailingDemandPrediction {
 
     public static void main(String[] args) throws InterruptedException {
-        // Initialize Spark Configuration
+        // Initializing Spark Configuration
         SparkConf conf = new SparkConf()
                 .setAppName("RideHailingDemandPrediction")
                 .setMaster("local[*]"); // Use 'local[*]' for local development
 
-        // Initialize Spark Context
+        // Initializing Spark Context
         JavaSparkContext sc = new JavaSparkContext(conf);
         sc.setLogLevel("WARN");
 
-        // Initialize Spark Streaming Context
+        // Initializing Spark Streaming Context
         JavaStreamingContext streamingContext = new JavaStreamingContext(sc, Durations.seconds(10));
 
-        // Simulate Streaming Data Source (e.g., using a socket stream)
+        // Simulating Streaming Data Source (e.g., using a socket stream)
         JavaReceiverInputDStream<String> rideStream = streamingContext.socketTextStream("localhost", 9999);
 
         // Example processing: Parse the incoming stream and count demand in each location
@@ -40,10 +40,10 @@ public class RideHailingDemandPrediction {
                 .reduceByKey(Integer::sum)
                 .map(tuple -> "Location: " + tuple._1() + " - Demand Count: " + tuple._2());
 
-        // Output the result to the console
+        // Showing the result to the console
         demandCount.print();
 
-        // Start the streaming context and wait for termination
+        // Starting the streaming context and wait for termination
         streamingContext.start();
         streamingContext.awaitTermination();
     }

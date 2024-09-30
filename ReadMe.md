@@ -17,7 +17,7 @@
 
 ## **Project Overview**
 
-The Ride-Hailing Demand Prediction project is designed to predict ride-hailing demand in real-time using Apache Spark Streaming. The project simulates or processes real-time streaming data from ride-hailing requests, analyzes the demand, and integrates with technologies such as Kafka, HBase, and Hive for efficient data storage and retrieval.
+The Ride-Hailing Demand Prediction project is designed to predict ride-hailing demand in real-time using Apache Spark Streaming. The project simulates or processes real-time streaming data from ride-hailing requests, analyzes the demand, and integrates with technologies such as Kafka, HBase for efficient data storage and retrieval.
 
 This project demonstrates how big data tools can be combined to build a scalable, real-time analytics platform for predicting ride-hailing demand in different locations.
 

@@ -29,19 +29,19 @@ public class RideHailingDemandHbase {
     private static final Logger log = LoggerFactory.getLogger(RideHailingDemandHbase.class);
 
     public static void main(String[] args) throws InterruptedException {
-        // Initialize Spark Configuration
+        // Initializing Spark Configuration
         SparkConf conf = new SparkConf()
                 .setAppName("RideHailingDemandPrediction")
                 .setMaster("local[*]"); // Use 'local[*]' for local development
 
-        // Initialize Spark Context
+        // Initializing Spark Context
         JavaSparkContext sc = new JavaSparkContext(conf);
         sc.setLogLevel("WARN");
 
-        // Initialize Spark Streaming Context
+        // Initializing Spark Streaming Context
         JavaStreamingContext streamingContext = new JavaStreamingContext(sc, Durations.seconds(10));
 
-        // Simulate Streaming Data Source (e.g., using a socket stream)
+        // Simulating Streaming Data Source (e.g., using a socket stream)
         JavaReceiverInputDStream<String> rideStream = streamingContext.socketTextStream("localhost", 9999);
 
         // Example processing: Parse the incoming stream and count demand in each location
@@ -52,7 +52,7 @@ public class RideHailingDemandHbase {
                 .reduceByKey(Integer::sum)
                 .map(tuple -> new Tuple2<>(tuple._1(), tuple._2()));
 
-        // Save processed data to HBase
+        // Saving processed data to HBase
         demandCount.foreachRDD(rdd -> {
             rdd.foreachPartition(partition -> {
                 // Set up HBase configuration
@@ -87,7 +87,7 @@ public class RideHailingDemandHbase {
             });
         });
 
-        // Start the streaming context and wait for termination
+        // Starting the streaming context and wait for termination
         streamingContext.start();
         streamingContext.awaitTermination();
     }
